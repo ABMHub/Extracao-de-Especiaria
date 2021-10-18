@@ -1,0 +1,13 @@
+No planeta deserto de Arrakis, a Especiaria é a substância mais preciosa, não há uma pessoa que não a deseje. Por isso, o contrabando é forte e organizado. Para extrair a Especiaria da areia, é necessário um contrabandista e um equipamento de extração. Chamaremos o contrabandista encarregado da extração de 'extrator'. Cada equipamento extrai da areia determinado volume de Especiaria e armazena em si mesmo, como se fosse uma seringa. Enquanto um equipamento está cheio, não é possível usá-lo para extrair mais Especiaria.
+
+O processo de esvaziar os equipamentos também exige mão de obra. É necessário que cada pessoa, que esteja encarregada dessa tarefa, pegue um equipamento de extração cheio e o esvazie dentro de um grande recipiente, que será lacrado quando estiver cheio. Chamaremos o contrabandista encarregado de esvaziar os equipamentos de manutentor.
+
+De tempos em tempos alguém virá buscar o recipiente, e só o levará quando ele estiver lacrado. Tempos depois da saída, após algum tempo, essa pessoa voltará com um novo recipiente vazio e irá embora, retornando após determinado período de tempo. Só pode existir um recipiente por vez.
+
+Como Arrakis é um planeta muito quente e seco, de tempos em tempos os trabalhadores precisarão parar para descansar e beber água, para não desidratar ou desmaiar.
+
+Regras:
+Caso um extrator fique sem equipamento, ele esperará até que um equipamento seja liberado.
+Caso um manutentor não tenha mais equipamentos para esvaziar, ele esperará até que mais um equipamento necessite de sua mão de obra.
+Caso não haja recipientes disponíveis para o manutentor, ele esperará até que mais um recipiente apareça.
+O critério de desidratação de um contrabandista é baseado no número de ações que ele toma. Após x ações (ou seja, encher ou esvaziar o equipamento x vezes), ele parará. O contrabandista que transporta o recipiente não precisa descansar.
