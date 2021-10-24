@@ -2,13 +2,14 @@
 #include <semaphore.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "unistd.h"
 
 // definicao dos parametros
-#define QTD_EXTRATORES 3    // qtd de pessoas extraindo a especiaria
-#define EQUIPAMENTOS 4      // qtd de equipamentos disponiveis
+#define QTD_EXTRATORES 4    // qtd de pessoas extraindo a especiaria
+#define EQUIPAMENTOS 6      // qtd de equipamentos disponiveis
 #define QTD_MANUTENTORES 3  // qtd de pessoas colocando a especiaria no recipiente final
-#define CAP_RECIPIENTE 5    // capacidade maxima do recipiente
+#define CAP_RECIPIENTE 20    // capacidade maxima do recipiente
 #define STAMINA 3           // qtd de acoes que uma pessoa toma, antes de descansar
 
 // definicao dos semaforos de equipamento
@@ -28,6 +29,7 @@ void * manutenir(void *arg);
 void * recipiente(void *arg);
 
 int main () {
+  srand(time(NULL));                          // melhora a randomizacao
   pthread_t extratores[QTD_EXTRATORES];                
   pthread_t manutentores[QTD_MANUTENTORES];            
   pthread_t viajante;                                 
@@ -77,14 +79,14 @@ void * extrair(void *arg) {
   while (1) {
     sem_wait(&equipamentos_vazios);   // pega um equipamento vazio
       printf("Extrator %d esta extraindo especiaria\n", id);
-      sleep(5);                       // simula trabalho
+      sleep(rand()%5);                       // simula trabalho
     sem_post(&equipamentos_cheios);   // devolve um equipamento cheio
 
     printf("Extrator %d terminou de extrair especiaria\n", id);
     qtd_acoes++;                      // aumenta contador de acoes
     if (qtd_acoes == STAMINA) {       // se o funcionario estiver cansado
       printf("Extrator %d esta descansando\n", id);
-      sleep(10);                      // descansa
+      sleep((rand()%3)+3);                      // descansa
       qtd_acoes = 0;                  // zera qtd de acoes tomadas
     }
   }
@@ -100,7 +102,6 @@ void * manutenir(void *arg) {
   while (1) {
     sem_wait(&equipamentos_cheios);               // pega um equipamento cheio
       printf("Manutenor %d vai esvaziar um equipamento no recipiente\n", id);
-      sleep(5);                                   // simula 'esvaziamento'
       pthread_mutex_lock(&lock_capacidade);       // pega lock de exclusao mutua do recipiente
         while (capacidade_atual == 0) {           // se o recipiente estiver cheio :
           printf("O recipiente esta cheio, manutenor %d vai dormir\n", id);
@@ -108,6 +109,7 @@ void * manutenir(void *arg) {
           // dorme 
           pthread_cond_wait(&cond_recipiente, &lock_capacidade);
         }
+        sleep(rand()%3);                                 // simula 'esvaziamento'
         capacidade_atual--;                       // caso o recipiente tenha capacidade disponivel, enche ele
       printf("Manutenor %d terminou de esvaziar um equipamento. Capacidade atual = %d\n", id, capacidade_atual);
       pthread_mutex_unlock(&lock_capacidade);     // destrava lock do recipiente
@@ -115,7 +117,7 @@ void * manutenir(void *arg) {
     qtd_acoes++;                                  // aumenta contador de acoes
     if (qtd_acoes == STAMINA) {                   // se o funcionario estiver cansado
       printf("Manutenor %d esta descansando\n", id);
-      sleep(10);                                  // descansa
+      sleep((rand()%3)+3);                                  // descansa
       qtd_acoes = 0;                              // zera qtd de acoes tomadas
     }
   }
@@ -138,9 +140,8 @@ void * recipiente(void *arg) {
     pthread_mutex_unlock(&lock_capacidade);       // destrava lock do recipiente
 
     printf("O viajante levou o antigo recipiente embora\n");
-    sleep(30);                                    // simula tempo entre pegar o recipiente cheio e devolver um vazio
+    sleep((rand()%5) + 5);                                    // simula tempo entre pegar o recipiente cheio e devolver um vazio
 
-    //
     pthread_mutex_lock(&lock_capacidade);         // trava lock do recipiente
     capacidade_atual = CAP_RECIPIENTE;            // capacidade atual vira capacidade total (esta vazio)
     pthread_cond_broadcast(&cond_recipiente);     // acorda todos os manutenores dormindo
